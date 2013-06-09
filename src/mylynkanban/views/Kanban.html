@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="angular.js"></script>
+<script src="underscore.js"></script>
+<script src="kanbanLogic.js"></script>
+<link rel="stylesheet" type="text/css" href="kanbanTable.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1255">
+<title>Kanban Board</title>
+</head>
+<body>
+<table ng-app id="kanbanTable">
+	<tr>
+		<th>
+			To Do
+		</th>
+		<th>
+			In Progress
+		</th>
+		<th>
+			Done
+		</th>
+	</tr>
+	<tr>
+		<td ng-controller="TaskListController">
+			<div ng-repeat="task in taskList | filter:{data.status:'todo'}" class="task">
+				{{task.data.id}}: {{task.data.summary}}
+			</div>
+		</td>
+		<td ng-controller="TaskListController">
+			<div ng-repeat="task in taskList | filter:{data.status:'inprogress'}" class="task">
+				{{task.data.id}}: {{task.data.summary}}
+			</div>
+		</td>
+		<td ng-controller="TaskListController">
+			<div ng-repeat="task in taskList | filter:{data.status:'done'}" class="task">
+				{{task.data.id}}: {{task.data.summary}}
+			</div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

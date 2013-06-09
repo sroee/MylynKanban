@@ -1,0 +1,22 @@
+#kanbanTable,
+#kanbanTable th,
+#kanbanTable td {
+	border: solid 2px black;
+	vertical-align: baseline;
+	border-collapse:collapse;
+}
+
+#kanbanTable th {
+	width: 150px;
+	height: 50px;
+}
+
+#kanbanTable td {
+	height: 150px;
+}
+
+.task {
+	border: solid 1px blue;
+	padding: 5px;
+	margin: 5px;
+}
