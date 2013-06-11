@@ -61,6 +61,13 @@ function detectStatus(completed, hasContext, isActive) {
 	return completed ? "done" :	((hasContext || isActive) ? "inprogress" : "todo");
 }
 
-function buildTask(id, summary, completed, hasContext, isActive) {
-	return {id: id, summary: summary, status: detectStatus(completed, hasContext, isActive)};
+function buildTask(task) {
+	if (task.dueDate) {
+		alert(task.dueDate);
+	}
+	return {
+		id: task.id, 
+		summary: task.summary, 
+		status: detectStatus(task.isCompleted, task.hasContext, task.isActive)
+	};
 }
