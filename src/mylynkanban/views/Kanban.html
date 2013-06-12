@@ -24,22 +24,22 @@
 	<tr>
 		<td ng-controller="TaskListController">
 			<div ng-repeat="task in taskList | filter:{data.status:'todo'}" class="task">
-				<span ng-include="'KanbanTask.html'"></span>
+				<span ng-include="'tmpl/task.html'"></span>
 			</div>
 		</td>
 		<td ng-controller="TaskListController">
 			<div ng-repeat="task in taskList | filter:{data.status:'inprogress'}" class="task">
-				<span ng-include="'KanbanTask.html'"></span>
+				<span ng-include="'tmpl/task.html'"></span>
 			</div>
 		</td>
 		<td ng-controller="TaskListController">
 			<div ng-repeat="task in taskList | filter:{data.status:'done'}" class="task">
-				<span ng-include="'KanbanTask.html'"></span>
+				<span ng-include="'tmpl/task.html'"></span>
 			</div>
 		</td>
 	</tr>
 </table>
-<script type="text/ng-template" id="KanbanTask.html">
+<script type="text/ng-template" id="tmpl/task.html">
 	{{task.data.id}}: {{task.data.summary}} 
 	<span ng-show="task.data.dueDate"><br/>Due Date: {{task.data.dueDate}}</span>
 	<span ng-show="task.data.startDate"><br/>Start Date: {{task.data.startDate}}</span>
