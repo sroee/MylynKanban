@@ -182,6 +182,17 @@ public class MylynKanbanView extends ViewPart {
 	
 	public String buildTaskString(AbstractTask task) {
 		Date dueDate = task.getDueDate();
+		DateRange range = task.getScheduledForDate();
+		Date start = null;
+		Date end = null;
+		if (range != null) {
+			if(range.getStartDate() != null) {
+				start = range.getStartDate().getTime();
+			}
+			if (range.getStartDate() != null) {
+				end = range.getStartDate().getTime();
+			}
+		}
 		return 
 			"taskConnector.upsertTask(buildTask({" +
 				"id:" + task.getTaskId() + 
@@ -190,6 +201,9 @@ public class MylynKanbanView extends ViewPart {
 				",hasContext:" + ContextCore.getContextManager().hasContext(task.getHandleIdentifier()) +
 				",isActive:" + task.isActive() +
 				((dueDate != null)?(",dueDate:'" +  getRelativeDate(dueDate) + "'"):"") +
+				((start != null)?(",startDate:'" +  getRelativeDate(start) + "'"):"") +
+				((end != null)?(",endDate:'" +  getRelativeDate(end) + "'"):"") +
+				",estimated:" + task.getEstimatedTimeHours() + 
 				"}))";
 	}
 

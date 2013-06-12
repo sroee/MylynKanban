@@ -8,8 +8,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1255">
 <title>Kanban Board</title>
 </head>
-<body>
-<table ng-app id="kanbanTable">
+<body ng-app>
+<table id="kanbanTable">
 	<tr>
 		<th>
 			To Do
@@ -24,20 +24,27 @@
 	<tr>
 		<td ng-controller="TaskListController">
 			<div ng-repeat="task in taskList | filter:{data.status:'todo'}" class="task">
-				{{task.data.id}}: {{task.data.summary}}
+				<span ng-include="'KanbanTask.html'"></span>
 			</div>
 		</td>
 		<td ng-controller="TaskListController">
 			<div ng-repeat="task in taskList | filter:{data.status:'inprogress'}" class="task">
-				{{task.data.id}}: {{task.data.summary}}
+				<span ng-include="'KanbanTask.html'"></span>
 			</div>
 		</td>
 		<td ng-controller="TaskListController">
 			<div ng-repeat="task in taskList | filter:{data.status:'done'}" class="task">
-				{{task.data.id}}: {{task.data.summary}}
+				<span ng-include="'KanbanTask.html'"></span>
 			</div>
 		</td>
 	</tr>
 </table>
+<script type="text/ng-template" id="KanbanTask.html">
+	{{task.data.id}}: {{task.data.summary}} 
+	<span ng-show="task.data.dueDate"><br/>Due Date: {{task.data.dueDate}}</span>
+	<span ng-show="task.data.startDate"><br/>Start Date: {{task.data.startDate}}</span>
+	<span ng-show="task.data.endDate"><br/>End Date: {{task.data.endDate}}</span>
+	<span ng-show="task.data.estimated!=0"><br/>Estimated Hours: {{task.data.estimated}}</span>
+</script>
 </body>
 </html>

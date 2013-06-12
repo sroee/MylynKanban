@@ -62,12 +62,13 @@ function detectStatus(completed, hasContext, isActive) {
 }
 
 function buildTask(task) {
-	if (task.dueDate) {
-		alert(task.dueDate);
-	}
 	return {
 		id: task.id, 
 		summary: task.summary, 
-		status: detectStatus(task.isCompleted, task.hasContext, task.isActive)
+		status: detectStatus(task.isCompleted, task.hasContext, task.isActive),
+		dueDate: task.dueDate,
+		startDate: task.startDate,
+		endDate: task.endDate,
+		estimated: task.estimated
 	};
 }
