@@ -1,44 +1,9 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html ng-app="kanban">
 <head>
 <script src="angular.js"></script>
 <script src="underscore.js"></script>
-<script src="kanbanLogic.js"></script>
-<link rel="stylesheet" type="text/css" href="kanbanTable.css" />
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1255">
-<title>Kanban Board</title>
-</head>
-<body ng-app>
-<table id="kanbanTable">
-	<tr>
-		<th>
-			To Do
-		</th>
-		<th>
-			In Progress
-		</th>
-		<th>
-			Done
-		</th>
-	</tr>
-	<tr>
-		<td ng-controller="TaskListController">
-			<div ng-repeat="task in taskList | filter:{data.status:'todo'}" class="task">
-				<span ng-include="'tmpl/task.html'"></span>
-			</div>
-		</td>
-		<td ng-controller="TaskListController">
-			<div ng-repeat="task in taskList | filter:{data.status:'inprogress'}" class="task">
-				<span ng-include="'tmpl/task.html'"></span>
-			</div>
-		</td>
-		<td ng-controller="TaskListController">
-			<div ng-repeat="task in taskList | filter:{data.status:'done'}" class="task">
-				<span ng-include="'tmpl/task.html'"></span>
-			</div>
-		</td>
-	</tr>
-</table>
+
 <script type="text/ng-template" id="tmpl/task.html">
 	{{task.data.id}}: {{task.data.summary}} 
 	<span ng-show="task.data.dueDate"><br/>Due Date: {{task.data.dueDate}}</span>
@@ -46,5 +11,37 @@
 	<span ng-show="task.data.endDate"><br/>End Date: {{task.data.endDate}}</span>
 	<span ng-show="task.data.estimated!=0"><br/>Estimated Hours: {{task.data.estimated}}</span>
 </script>
+<script type="text/ng-template" id="tmpl/column.html">
+	<div class="td">
+		<div ng-repeat="task in taskList | filter:{data.status:status}" class="task">
+			<span ng-include="'tmpl/task.html'"></span>
+		</div>
+	</div>
+</script>
+
+<script src="kanbanLogic.js"></script>
+<link rel="stylesheet" type="text/css" href="kanbanTable.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1255">
+<title>Kanban Board</title>
+</head>
+<body>
+<div id="kanbanTable" ng-controller="TaskListController">
+	<div class="tr">
+		<div class="th">
+			To Do
+		</div>
+		<div class="th">
+			In Progress
+		</div>
+		<div class="th">
+			Done
+		</div>
+	</div>
+	<div class="tr">
+		<column status="todo" task-list="taskList"></column>
+		<column status="inprogress" task-list="taskList"></column>
+		<column status="done" task-list="taskList"></column>
+	</div>
+</table>
 </body>
 </html>
