@@ -2,12 +2,7 @@ angular.module('kanban', []).directive('column', function() {
 	return {
 		restrict: 'E',
 		scope: { status: '@', taskList: '=taskList'},
-//		templateUrl: "'tmpl/column.html'",
-		template: 	'<div class="td">' +
-						'<div ng-repeat="task in taskList | filter:{data.status:status}" class="task">' +
-							"<span ng-include=\"'tmpl/task.html'\"></span>" +
-						'</div>' + 
-					'</div>',
+		templateUrl: "tmpl/column.html",
 		replace: true
 	};
 });
