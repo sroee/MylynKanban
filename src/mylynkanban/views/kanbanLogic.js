@@ -1,8 +1,15 @@
 angular.module('kanban', []).directive('column', function() {
 	return {
 		restrict: 'E',
-		scope: { status: '@', taskList: '=taskList'},
+		scope: { status: '@', taskList: '=taskList' },
 		templateUrl: "tmpl/column.html",
+		replace: true
+	};
+}).directive('lane', function() {
+	return {
+		restrict: 'E',
+		scope: { taskList: '=taskList' },
+		templateUrl: "tmpl/lane.html",
 		replace: true
 	};
 });

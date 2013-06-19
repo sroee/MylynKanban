@@ -19,6 +19,13 @@
 		</div>
 	</div>
 </script>
+<script type="text/ng-template" id="tmpl/lane.html">
+	<div class="tr">
+		<column status="todo" task-list="taskList"></column>
+		<column status="inprogress" task-list="taskList"></column>
+		<column status="done" task-list="taskList"></column>
+	</div>
+</script>
 
 <script src="kanbanLogic.js"></script>
 <link rel="stylesheet" type="text/css" href="kanbanTable.css" />
@@ -38,11 +45,7 @@
 			Done
 		</div>
 	</div>
-	<div class="tr">
-		<column status="todo" task-list="taskList"></column>
-		<column status="inprogress" task-list="taskList"></column>
-		<column status="done" task-list="taskList"></column>
-	</div>
+	<lane/>
 </table>
 </body>
 </html>
