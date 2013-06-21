@@ -1,7 +1,13 @@
 angular.module('kanban', []).directive('column', function() {
+	var test123 = function(task) {
+		return false;
+	};
 	return {
 		restrict: 'E',
-		scope: { status: '@', taskList: '=taskList' },
+		scope : {
+			status: '@',
+			taskList: '=taskList'
+		},
 		templateUrl: "tmpl/column.html",
 		replace: true
 	};
@@ -71,6 +77,10 @@ function TaskListController($scope) {
 	taskConnector.addTaskModifiedListener(function() {
 		$scope.$apply();
 	});
+	
+	$scope.roeeTest = function(task) {
+		return false;
+	};
 }
 
 function detectStatus(completed, hasContext, isActive) {
