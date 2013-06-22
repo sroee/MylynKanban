@@ -9,7 +9,14 @@
 			restrict: 'E',
 			scope : {
 				status: '@',
-				taskList: '=taskList'
+				taskList: '=taskList',
+				category: '=category'
+			},
+			controller: function($scope, $element){ 
+				$scope.testTask = function(task) {
+					return 	(task.data.status === $scope.status) &&
+							(task.data.category === $scope.category || $scope.category === "" && !task.data.category);
+				}; 
 			},
 			templateUrl: "tmpl/column.html",
 			replace: true
@@ -17,7 +24,8 @@
 	}).directive('lane', function() {
 		return {
 			restrict: 'E',
-			scope: { taskList: '=taskList' },
+			scope: { taskList: '=taskList',
+					 category: '=category'},
 			templateUrl: "tmpl/lane.html",
 			replace: true
 		};
@@ -29,6 +37,7 @@
 			tasksIndex = {};
 		
 		that.tasksList = [];
+		that.categories = [];
 		
 		var notifyTaskListeners = function() {
 			var idx;
@@ -42,6 +51,16 @@
 		};
 		
 		that.upsertTask = function(task) {
+			function ensureCategory(taskData) {
+				if (taskData.category) {
+					if (_.indexOf(that.categories, taskData.category) === -1) {
+						that.categories.push(taskData.category);
+					}
+				} else if (_.indexOf(that.categories, "") === -1) {
+					that.categories.push("");
+				}
+			}
+			
 			function insert(task) {
 				var wrapped = {data: task};
 				that.tasksList.push(wrapped);
@@ -53,6 +72,7 @@
 			}
 			
 			if (task.id) {
+				ensureCategory(task);
 				if (tasksIndex[task.id]) {
 					update(tasksIndex[task.id], task);
 				} else {
@@ -77,13 +97,10 @@
 
 	window.TaskListController = function($scope) {
 		$scope.taskList = window.taskConnector.tasksList;
+		$scope.categories = window.taskConnector.categories;
 		window.taskConnector.addTaskModifiedListener(function() {
 			$scope.$apply();
 		});
-		
-		$scope.roeeTest = function(task) {
-			return false;
-		};
 	};
 
 	function detectStatus(completed, hasContext, isActive) {
@@ -98,7 +115,8 @@
 			dueDate: task.dueDate,
 			startDate: task.startDate,
 			endDate: task.endDate,
-			estimated: task.estimated
+			estimated: task.estimated,
+			category: task.category
 		};
 	};
 	

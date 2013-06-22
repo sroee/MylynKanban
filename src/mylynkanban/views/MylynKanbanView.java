@@ -14,6 +14,8 @@ import org.eclipse.mylyn.context.core.AbstractContextListener;
 import org.eclipse.mylyn.context.core.ContextCore;
 import org.eclipse.mylyn.context.core.IInteractionContext;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTaskCategory;
+import org.eclipse.mylyn.internal.tasks.core.AbstractTaskContainer;
 import org.eclipse.mylyn.internal.tasks.core.DateRange;
 import org.eclipse.mylyn.internal.tasks.core.ITaskListChangeListener;
 import org.eclipse.mylyn.internal.tasks.core.TaskContainerDelta;
@@ -181,30 +183,49 @@ public class MylynKanbanView extends ViewPart {
 	}
 	
 	public String buildTaskString(AbstractTask task) {
+		String retVal = null;
 		Date dueDate = task.getDueDate();
 		DateRange range = task.getScheduledForDate();
 		Date start = null;
 		Date end = null;
-		if (range != null) {
-			if(range.getStartDate() != null) {
-				start = range.getStartDate().getTime();
-			}
-			if (range.getStartDate() != null) {
-				end = range.getStartDate().getTime();
+		
+		String category = null;
+		boolean isValidTask = false;
+		for (AbstractTaskContainer taskContainer : task.getParentContainers()) {
+			if (taskContainer instanceof AbstractTaskCategory) {
+				AbstractTaskCategory categoryObj = (AbstractTaskCategory)taskContainer;
+				category = categoryObj.getSummary();
+				isValidTask = true;
+				break;
 			}
 		}
-		return 
-			"taskConnector.upsertTask(buildTask({" +
-				"id:" + task.getTaskId() + 
-				",summary:'" + task.getSummary() + 
-				"',isCompleted:" + task.isCompleted() +
-				",hasContext:" + ContextCore.getContextManager().hasContext(task.getHandleIdentifier()) +
-				",isActive:" + task.isActive() +
-				((dueDate != null)?(",dueDate:'" +  getRelativeDate(dueDate) + "'"):"") +
-				((start != null)?(",startDate:'" +  getRelativeDate(start) + "'"):"") +
-				((end != null)?(",endDate:'" +  getRelativeDate(end) + "'"):"") +
-				",estimated:" + task.getEstimatedTimeHours() + 
-				"}))";
+		
+		if (isValidTask) {
+			if (range != null) {
+				if(range.getStartDate() != null) {
+					start = range.getStartDate().getTime();
+				}
+				if (range.getStartDate() != null) {
+					end = range.getStartDate().getTime();
+				}
+			}
+			retVal =  
+				"taskConnector.upsertTask(buildTask({" +
+					"id:" + task.getTaskId() + 
+					",summary:'" + task.getSummary() + 
+					"',isCompleted:" + task.isCompleted() +
+					",hasContext:" + ContextCore.getContextManager().hasContext(task.getHandleIdentifier()) +
+					",isActive:" + task.isActive() +
+					((dueDate != null)?(",dueDate:'" +  getRelativeDate(dueDate) + "'"):"") +
+					((start != null)?(",startDate:'" +  getRelativeDate(start) + "'"):"") +
+					((end != null)?(",endDate:'" +  getRelativeDate(end) + "'"):"") +
+					",estimated:" + task.getEstimatedTimeHours() + 
+					",category:'" + category + "'" +  
+					"}))";
+		} else {
+			retVal = "";
+		}
+		return retVal;
 	}
 
 	@Override

@@ -14,16 +14,19 @@
 </script>
 <script type="text/ng-template" id="tmpl/column.html">
 	<div class="td">
-		<div ng-repeat="task in taskList | filter:{data.status:status}" class="task">
+		<div ng-repeat="task in taskList | filter:testTask" class="task">
 			<span ng-include="'tmpl/task.html'"></span>
 		</div>
 	</div>
 </script>
 <script type="text/ng-template" id="tmpl/lane.html">
 	<div class="tr" task-list="taskList">
-		<column status="todo" task-list="taskList"></column>
-		<column status="inprogress" task-list="taskList"></column>
-		<column status="done" task-list="taskList"></column>
+		<div class="th">
+			{{category}}
+		</div>
+		<column status="todo" task-list="taskList" category="category"></column>
+		<column status="inprogress" task-list="taskList" category="category"></column>
+		<column status="done" task-list="taskList" category="category"></column>
 	</div>
 </script>
 
@@ -36,6 +39,9 @@
 <div id="kanbanTable" ng-controller="TaskListController">
 	<div class="tr">
 		<div class="th">
+			Categories
+		</div>
+		<div class="th">
 			To Do
 		</div>
 		<div class="th">
@@ -45,7 +51,7 @@
 			Done
 		</div>
 	</div>
-	<lane/>
+	<lane ng-repeat="category in categories" category="category"></lane>
 </div>
 </body>
 </html>
