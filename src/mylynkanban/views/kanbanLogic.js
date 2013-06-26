@@ -4,6 +4,8 @@
 (function() {
 	"use strict";
 	
+	var HOURS_A_DAY = 8;
+	
 	angular.module('kanban', []).directive('column', function() {
 		return {
 			restrict: 'E',
@@ -106,8 +108,20 @@
 	function detectStatus(completed, hasContext, isActive) {
 		return completed ? "done" :	((hasContext || isActive) ? "inprogress" : "todo");
 	}
+	
+	function putEllipsis(str, maxLength) {
+		if (str.length > maxLength) {
+			return str.substring(0, maxLength - 3) + "...";
+		} else {
+			return str;
+		}
+	}
 
 	window.buildTask = function(task) {
+		var estimated = task.estimated;
+		if (estimated) {
+			estimated = Math.round( (task.data.estimated / HOURS_A_DAY) * 10 ) / 10;
+		}
 		return {
 			id: task.id, 
 			summary: task.summary, 
@@ -115,10 +129,9 @@
 			dueDate: task.dueDate,
 			startDate: task.startDate,
 			endDate: task.endDate,
-			estimated: task.estimated,
-			category: task.category
+			estimated: estimated,
+			category: putEllipsis(task.category, 25)
 		};
 	};
 	
 }());
-

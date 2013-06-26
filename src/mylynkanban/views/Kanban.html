@@ -6,11 +6,15 @@
 <script src="underscore.js"></script>
 
 <script type="text/ng-template" id="tmpl/task.html">
-	{{task.data.id}}: {{task.data.summary}} 
-	<span ng-show="task.data.dueDate"><br/>Due Date: {{task.data.dueDate}}</span>
-	<span ng-show="task.data.startDate"><br/>Start Date: {{task.data.startDate}}</span>
-	<span ng-show="task.data.endDate"><br/>End Date: {{task.data.endDate}}</span>
-	<span ng-show="task.data.estimated!=0"><br/>Estimated Hours: {{task.data.estimated}}</span>
+	<div class="taskID">#{{task.data.id}}</div>
+	<span ng-show="task.data.estimated&&task.data.estimated!=0" class="estimated">{{task.data.estimated}}d</span>
+	<div style="clear: both"></div>
+	<div class="summary">{{task.data.summary}}</div>
+	<table><tr> 
+		<td><span ng-show="task.data.startDate" class="scheduledTo">{{task.data.startDate}}<em class="shrink70">scheduled</em></span></td>
+		<td><span ng-show="task.data.dueDate" class="dueDate">{{task.data.dueDate}}<em>due</em></span></td>
+		<td><div class<span ng-show="task.data.endDate" class="endDate">{{task.data.endDate}}<em>done</em></span></td>
+	</tr></table>
 </script>
 <script type="text/ng-template" id="tmpl/column.html">
 	<div class="td">
@@ -39,7 +43,6 @@
 <div id="kanbanTable" ng-controller="TaskListController">
 	<div class="tr">
 		<div class="th">
-			Categories
 		</div>
 		<div class="th">
 			To Do
