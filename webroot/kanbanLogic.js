@@ -120,7 +120,7 @@
 	window.buildTask = function(task) {
 		var estimated = task.estimated;
 		if (estimated) {
-			estimated = Math.round( (task.data.estimated / HOURS_A_DAY) * 10 ) / 10;
+			estimated = Math.round( (estimated / HOURS_A_DAY) * 10 ) / 10;
 		}
 		return {
 			id: task.id, 

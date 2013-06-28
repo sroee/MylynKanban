@@ -133,7 +133,7 @@ public class MylynKanbanView extends ViewPart {
 			}
 		});
 
-		browser.setUrl(Activator.getAbsoluteURL("src/mylynkanban/views/Kanban.html"));
+		browser.setUrl(Activator.getAbsoluteURL("webroot/Kanban.html"));
 	}
 	
 	public String buildDeleteString(AbstractTask task) {

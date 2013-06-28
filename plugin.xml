@@ -34,5 +34,12 @@
             file="contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/demoservlet"
+            class="mylynkanban.servlets.DemoServlet">
+      </servlet>
+   </extension>
 
 </plugin>

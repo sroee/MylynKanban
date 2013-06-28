@@ -3,11 +3,14 @@ package mylynkanban;
 import java.io.File;
 import java.io.FileReader;
 
+import mylynkanban.servlets.GetMylynTasksServlet;
 import mylynkanban.webserver.BundleResourceHandler;
+import mylynkanban.webserver.ServletsHandler;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -44,7 +47,13 @@ public class Activator extends AbstractUIPlugin {
 		Handler bundleResourceHandler = new BundleResourceHandler();
 		((BundleResourceHandler)bundleResourceHandler).setBundleContext(context);
 		((BundleResourceHandler)bundleResourceHandler).setPath("/webroot");
-		server.setHandler(bundleResourceHandler);
+
+		Handler servletHandler = new ServletsHandler();
+		((ServletsHandler)servletHandler).addServlet("/service/get_mylyn_tasks.js", new GetMylynTasksServlet());
+		
+		HandlerList handlerList = new HandlerList();
+		handlerList.setHandlers(new Handler[] {servletHandler, bundleResourceHandler});
+		server.setHandler(handlerList);
 		server.start();
 	}
 

@@ -50,20 +50,20 @@ public class BundleResourceHandler extends HandlerWrapper  {
 		
 		String contentType = detectContentType(target);
 		if (contentType == null) {
-			System.err.println("Unknown content type for " + target);
-			throw new ServletException("mylynkanban.webserver.BundleResourceHandler: Unknown content type for " + target);
+			System.out.println("mylynkanban.webserver.BundleResourceHandler: Unknown content type for " + target + ", passing on.");
+		} else {
+			response.setContentType(contentType);
+			
+			BufferedReader resourceContent = getResourceContent(target);
+			if (resourceContent != null) {
+				response.setStatus(HttpServletResponse.SC_OK);
+		        baseRequest.setHandled(true);
+			}
+			String currLine;
+			while ((currLine = resourceContent.readLine()) != null)
+				response.getWriter().println(currLine);
+			resourceContent.close();
 		}
-		response.setContentType(contentType);
-		
-		BufferedReader resourceContent = getResourceContent(target);
-		if (resourceContent != null) {
-			response.setStatus(HttpServletResponse.SC_OK);
-	        baseRequest.setHandled(true);
-		}
-		String currLine;
-		while ((currLine = resourceContent.readLine()) != null)
-			response.getWriter().println(currLine);
-		resourceContent.close();
 	}
 	
 	private BufferedReader getResourceContent(String target) throws IOException{
