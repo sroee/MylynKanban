@@ -5,6 +5,7 @@
 	"use strict";
 	
 	var HOURS_A_DAY = 8;
+	var commands = {};
 	
 	angular.module('kanban', []).directive('column', function() {
 		return {
@@ -95,12 +96,12 @@
 		return that;
 	}
 
-	window.taskConnector = new TaskConnector();
+	var taskConnector = new TaskConnector();
 
 	window.TaskListController = function($scope) {
-		$scope.taskList = window.taskConnector.tasksList;
-		$scope.categories = window.taskConnector.categories;
-		window.taskConnector.addTaskModifiedListener(function() {
+		$scope.taskList = taskConnector.tasksList;
+		$scope.categories = taskConnector.categories;
+		taskConnector.addTaskModifiedListener(function() {
 			$scope.$apply();
 		});
 	};
@@ -117,7 +118,7 @@
 		}
 	}
 
-	window.buildTask = function(task) {
+	function buildTask(task) {
 		var estimated = task.estimated;
 		if (estimated) {
 			estimated = Math.round( (estimated / HOURS_A_DAY) * 10 ) / 10;
@@ -133,5 +134,36 @@
 			category: putEllipsis(task.category, 25)
 		};
 	};
+	
+	commands.upsert = function(tasksArr) {
+		var i;
+		for(i = 0; i < tasksArr.length; i++) {
+			taskConnector.upsertTask(buildTask(tasksArr[i]));
+		}
+		return true;
+	};
+	
+	commands.remove = function(taskId) {
+		taskConnector.removeTask(taskId);
+	};
+	
+	
+	(function handleServerComm() {
+		var connection = new WebSocket('ws://localhost:9999/service/kanban_tasks_api');
+		
+		// Log errors
+		connection.onerror = function (error) {
+		  console.log('WebSocket Error ' + error);
+		};
+
+		// Log messages from the server
+		connection.onmessage = function (e) {
+			var data = JSON.parse(e.data);
+			if (data.command) {
+				commands[data.command](data.params);
+			}
+		};
+	}());
+
 	
 }());

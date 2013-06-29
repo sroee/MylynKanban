@@ -35,6 +35,7 @@ public class BundleResourceHandler extends HandlerWrapper  {
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
+		System.out.println("trying to handle " + target + " in BundleResourceHandler.");
 		if (m_path == null) {
 			System.err.println("Must add in bundle path, before calling handle of mylynkanban.webserver.BundleResourceHandler");
 			throw new ServletException("Must add in bundle path.");

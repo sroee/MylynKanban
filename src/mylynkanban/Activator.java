@@ -3,14 +3,16 @@ package mylynkanban;
 import java.io.File;
 import java.io.FileReader;
 
-import mylynkanban.servlets.GetMylynTasksServlet;
+import mylynkanban.servlets.KanbanTasksAPIWebSocket;
 import mylynkanban.webserver.BundleResourceHandler;
 import mylynkanban.webserver.ServletsHandler;
+import mylynkanban.webserver.WebSocketHandlerImpl;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.websocket.WebSocketHandler;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.internal.util.BundleUtility;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -48,11 +50,11 @@ public class Activator extends AbstractUIPlugin {
 		((BundleResourceHandler)bundleResourceHandler).setBundleContext(context);
 		((BundleResourceHandler)bundleResourceHandler).setPath("/webroot");
 
-		Handler servletHandler = new ServletsHandler();
-		((ServletsHandler)servletHandler).addServlet("/service/get_mylyn_tasks.js", new GetMylynTasksServlet());
+		WebSocketHandler websocketHandler = new WebSocketHandlerImpl();
+		((WebSocketHandlerImpl)websocketHandler).addWebSocket("/service/kanban_tasks_api", new KanbanTasksAPIWebSocket());
 		
 		HandlerList handlerList = new HandlerList();
-		handlerList.setHandlers(new Handler[] {servletHandler, bundleResourceHandler});
+		handlerList.setHandlers(new Handler[] {websocketHandler, bundleResourceHandler});
 		server.setHandler(handlerList);
 		server.start();
 	}

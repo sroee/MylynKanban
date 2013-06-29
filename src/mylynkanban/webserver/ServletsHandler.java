@@ -21,6 +21,7 @@ public class ServletsHandler extends HandlerWrapper {
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
+		System.out.println("trying to handle " + target + " in ServletsHandler.");
 		HttpServlet servlet = m_servletsMap.get(target);
 		if (servlet != null) {
 			servlet.service(request, response);
