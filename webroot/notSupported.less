@@ -1,0 +1,30 @@
+@base-font-size: 12px;
+@header-font-size: 24px;
+@header-bg: #B26E8F;
+@support-font: #4FA9FF;
+
+body {
+	font-family: sans-serif;
+  	font-size: @base-font-size;
+}
+
+#non-support-header {
+	background-color: @header-bg;
+	font-size: @header-font-size;
+	font-weight: bold;
+	margin-top: 0;
+	margin-left: -8px;
+	margin-right: -8px;
+	margin-bottom: 16px;
+	border: 0;
+	padding: 10px;
+}
+
+#support-link {
+	font-size: @header-font-size;
+	font-weight: bold;
+	a {
+		color: @support-font;
+		font-size: 110%;
+	}
+}

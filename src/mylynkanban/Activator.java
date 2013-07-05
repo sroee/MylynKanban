@@ -51,12 +51,14 @@ public class Activator extends AbstractUIPlugin {
 		((BundleResourceHandler)bundleResourceHandler).setPath("/webroot");
 
 		WebSocketHandler websocketHandler = new WebSocketHandlerImpl();
+		websocketHandler.getWebSocketFactory().setMinVersion(-1);
 		((WebSocketHandlerImpl)websocketHandler).addWebSocket("/service/kanban_tasks_api", new KanbanTasksAPIWebSocket());
 		
 		HandlerList handlerList = new HandlerList();
 		handlerList.setHandlers(new Handler[] {websocketHandler, bundleResourceHandler});
 		server.setHandler(handlerList);
 		server.start();
+		
 	}
 
 	/*

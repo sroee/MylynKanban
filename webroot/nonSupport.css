@@ -1,0 +1,24 @@
+body {
+  font-family: sans-serif;
+  font-size: 12px;
+}
+#non-support-header {
+  background-color: #b26e8f;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-left: -8px;
+  margin-right: -8px;
+  margin-bottom: 16px;
+  border: 0;
+  padding: 10px;
+}
+#support-link {
+  font-size: 24px;
+  font-weight: bold;
+}
+#support-link a {
+  color: #4fa9ff;
+  font-size: 110%;
+}
+
