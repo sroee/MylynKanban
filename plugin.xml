@@ -10,7 +10,7 @@
       </category>
       <view
             name="MylynKanbanView"
-            icon="icons/sample.gif"
+            icon="webroot/favicon.ico"
             category="MylynKanban"
             class="mylynkanban.views.MylynKanbanView"
             id="mylynkanban.views.MylynKanbanView">

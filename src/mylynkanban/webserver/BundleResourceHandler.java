@@ -2,6 +2,7 @@ package mylynkanban.webserver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
@@ -54,24 +55,30 @@ public class BundleResourceHandler extends HandlerWrapper  {
 			System.out.println("mylynkanban.webserver.BundleResourceHandler: Unknown content type for " + target + ", passing on.");
 		} else {
 			response.setContentType(contentType);
+
+			InputStream resourceContent = getResourceContent(target);
 			
-			BufferedReader resourceContent = getResourceContent(target);
 			if (resourceContent != null) {
 				response.setStatus(HttpServletResponse.SC_OK);
 		        baseRequest.setHandled(true);
+		        
+		        byte[] buffer = new byte[4096 * 2];
+		        int lengthRead = 0;
+		        while ((lengthRead = resourceContent.read(buffer)) != -1)
+					response.getOutputStream().write(buffer, 0, lengthRead);
+				resourceContent.close();
 			}
-			String currLine;
-			while ((currLine = resourceContent.readLine()) != null)
-				response.getWriter().println(currLine);
-			resourceContent.close();
 		}
 	}
 	
-	private BufferedReader getResourceContent(String target) throws IOException{
-		URL resourceInternalURL = m_bundleContext.getBundle().getEntry(m_path + target);
-		BufferedReader in = new BufferedReader(new InputStreamReader(resourceInternalURL.openStream()));		
-		return in;
+	private URL getResourceURL(String target) {
+		return m_bundleContext.getBundle().getEntry(m_path + target);
 	}
+	private InputStream getResourceContent(String target) throws IOException{
+		URL resourceInternalURL = getResourceURL(target);
+		return resourceInternalURL.openStream();
+	}
+	
 	private String getExtention(String resourceName) {
 		String[] tokens = resourceName.split("\\.(?=[^\\.]+$)");
 		if (tokens.length > 1) {
@@ -89,6 +96,10 @@ public class BundleResourceHandler extends HandlerWrapper  {
 			retVal = "application/javascript";
 		} else if (extention.equals("css")) {
 			retVal = "text/css";
+		} else if (extention.equals("png")) {
+			retVal = "image/png";
+		} else if (extention.equals("ico")) {
+			retVal = "image/x-icon";
 		}
 		return retVal;
 	}
