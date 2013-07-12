@@ -6,12 +6,13 @@
 body {
 	font-family: sans-serif;
   	font-size: @base-font-size;
+  	-webkit-text-size-adjust: 100%;
 }
 
 .horizontal-div {
 	overflow:hidden;
 	margin: 5px;
-	font-size: 200%;
+	font-size: 2em;
 	* {
 		display: inline-block;
 	}
@@ -23,7 +24,7 @@ body {
 }
 #self-link {
 	vertical-align: top;
-	line-height: 100%;
+	line-height: 1em;
 }
 
 .calendar{
@@ -47,7 +48,7 @@ body {
 	-webkit-box-shadow:0 2px 2px #888;
 	box-shadow:0 2px 2px #888;
 	
-	em {
+	.em {
 		display:block;
 		font:normal bold 11px/20px Arial, Helvetica, sans-serif;
 		text-transform:uppercase;
@@ -86,7 +87,7 @@ body {
 		
 	&:after{right:7px;}
 	
-	em:before, em:after{
+	.em:before, .em:after{
 		content:'';
 		float:left;
 		position:absolute;
@@ -101,8 +102,8 @@ body {
 		-webkit-border-radius:2px;
 		border-radius:2px;
 	}
-	em:before{left:9px;}	
-	em:after{right:9px;}	
+	.em:before{left:9px;}	
+	.em:after{right:9px;}	
 } 
 
 #kanbanTable {
@@ -181,7 +182,7 @@ body {
 	}
 	
 	.shrink70 {
-		font-size: 80%;
+		font-size: 0.8em;
 	}
 }
 
@@ -213,12 +214,12 @@ body {
 	box-shadow:  0px 2px 5px 0px rgba(0, 0, 0, 0.3);
 	
 	.taskID {
-		font-size: 85%;
+		font-size: 0.85em;
 		float: left;
 	}
 	.summary {
 		font-family: cursive;
-		font-size: 110%;
+		font-size: 1.1em;
 		text-align: left;
 	}	
 	

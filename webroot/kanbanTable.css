@@ -1,11 +1,12 @@
 body {
   font-family: sans-serif;
   font-size: 12px;
+  -webkit-text-size-adjust: 100%;
 }
 .horizontal-div {
   overflow: hidden;
   margin: 5px;
-  font-size: 200%;
+  font-size: 2em;
 }
 .horizontal-div * {
   display: inline-block;
@@ -15,7 +16,7 @@ body {
 }
 #self-link {
   vertical-align: top;
-  line-height: 100%;
+  line-height: 1em;
 }
 .calendar {
   zoom: 0.75;
@@ -38,7 +39,7 @@ body {
   -webkit-box-shadow: 0 2px 2px #888;
   box-shadow: 0 2px 2px #888;
 }
-.calendar em {
+.calendar .em {
   display: block;
   font: normal bold 11px/20px Arial, Helvetica, sans-serif;
   text-transform: uppercase;
@@ -78,8 +79,8 @@ body {
 .calendar:after {
   right: 7px;
 }
-.calendar em:before,
-.calendar em:after {
+.calendar .em:before,
+.calendar .em:after {
   content: '';
   float: left;
   position: absolute;
@@ -94,10 +95,10 @@ body {
   -webkit-border-radius: 2px;
   border-radius: 2px;
 }
-.calendar em:before {
+.calendar .em:before {
   left: 9px;
 }
-.calendar em:after {
+.calendar .em:after {
   right: 9px;
 }
 #kanbanTable {
@@ -167,7 +168,7 @@ body {
   background-color: #d9bf98;
 }
 #kanbanTable .shrink70 {
-  font-size: 80%;
+  font-size: 0.8em;
 }
 .task {
   background-color: #ffe41e;
@@ -184,12 +185,12 @@ body {
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
 }
 .task .taskID {
-  font-size: 85%;
+  font-size: 0.85em;
   float: left;
 }
 .task .summary {
   font-family: cursive;
-  font-size: 110%;
+  font-size: 1.1em;
   text-align: left;
 }
 .task .scheduledTo,
@@ -215,9 +216,9 @@ body {
   -webkit-box-shadow: 0 2px 2px #888;
   box-shadow: 0 2px 2px #888;
 }
-.task .scheduledTo em,
-.task .dueDate em,
-.task .endDate em {
+.task .scheduledTo .em,
+.task .dueDate .em,
+.task .endDate .em {
   display: block;
   font: normal bold 11px/20px Arial, Helvetica, sans-serif;
   text-transform: uppercase;
@@ -265,12 +266,12 @@ body {
 .task .endDate:after {
   right: 7px;
 }
-.task .scheduledTo em:before,
-.task .dueDate em:before,
-.task .endDate em:before,
-.task .scheduledTo em:after,
-.task .dueDate em:after,
-.task .endDate em:after {
+.task .scheduledTo .em:before,
+.task .dueDate .em:before,
+.task .endDate .em:before,
+.task .scheduledTo .em:after,
+.task .dueDate .em:after,
+.task .endDate .em:after {
   content: '';
   float: left;
   position: absolute;
@@ -285,14 +286,14 @@ body {
   -webkit-border-radius: 2px;
   border-radius: 2px;
 }
-.task .scheduledTo em:before,
-.task .dueDate em:before,
-.task .endDate em:before {
+.task .scheduledTo .em:before,
+.task .dueDate .em:before,
+.task .endDate .em:before {
   left: 9px;
 }
-.task .scheduledTo em:after,
-.task .dueDate em:after,
-.task .endDate em:after {
+.task .scheduledTo .em:after,
+.task .dueDate .em:after,
+.task .endDate .em:after {
   right: 9px;
 }
 .task .estimated {
