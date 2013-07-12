@@ -62,10 +62,10 @@ public class MylynKanbanView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		final Display disp = Display.getCurrent();
 		try {
-			browser = new Browser(parent, SWT.WEBKIT); 
+			browser = new Browser(parent, SWT.MOZILLA); 
 		} catch (Error e) {
 			try {
-				browser = new Browser(parent, SWT.MOZILLA);
+				browser = new Browser(parent, SWT.WEBKIT);
 			} catch (Error e2) {
 				browser = new Browser(parent, SWT.NONE);
 			}
