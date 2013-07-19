@@ -135,7 +135,9 @@
 				status: detectStatus(task.isCompleted, task.hasContext, task.isActive),
 				dueDate: task.dueDate,
 				startDate: task.startDate,
-				endDate: task.endDate,
+				scheduledEndDate: task.scheduledEndDate,
+				scheduledStartDate: task.scheduledStartDate,
+				endDate: task.completionDate,
 				estimated: estimated,
 				category: putEllipsis(task.category, 25)
 			};

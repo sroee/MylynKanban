@@ -6,12 +6,16 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.mylyn.context.core.AbstractContextListener;
+import org.eclipse.mylyn.context.core.ContextChangeEvent;
 import org.eclipse.mylyn.context.core.ContextCore;
 import org.eclipse.mylyn.context.core.IInteractionContext;
+import org.eclipse.mylyn.internal.context.core.InteractionContext;
+import org.eclipse.mylyn.internal.context.core.LocalContextStore;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTaskCategory;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTaskContainer;
@@ -20,8 +24,12 @@ import org.eclipse.mylyn.internal.tasks.core.ITaskListChangeListener;
 import org.eclipse.mylyn.internal.tasks.core.TaskContainerDelta;
 import org.eclipse.mylyn.internal.tasks.core.TaskList;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.monitor.core.InteractionEvent;
 
 public class KanbanTasksAPIWebSocket implements WebSocket.OnTextMessage {
+	
+	public static String STARTED_DATE_STR = "MYLKANB-START";
+	public static String UNDEFINED = "UNDEF";
 	
 	private Connection m_connection;
 
@@ -85,13 +93,32 @@ public class KanbanTasksAPIWebSocket implements WebSocket.OnTextMessage {
 		return strRetVal;
 	}
 	
+	public IInteractionContext getTaskContext(AbstractTask task) {
+		IInteractionContext context = null;
+		if (ContextCore.getContextManager().getActiveContext().getHandleIdentifier() == task.getHandleIdentifier()) {
+			context = ContextCore.getContextManager().getActiveContext();
+		}
+		else if (ContextCore.getContextStore() instanceof LocalContextStore) {
+			context = ((LocalContextStore)ContextCore.getContextStore()).loadContext(task.getHandleIdentifier());
+		}
+		return context;
+	}
+	public boolean hasContext(AbstractTask task) {
+		return ContextCore.getContextManager().hasContext(task.getHandleIdentifier());
+	}
+	
+	public void setTaskStartDate(IInteractionContext context, AbstractTask task) {
+		Date startDate = getContextStartDate(context);
+		if (startDate == null) {
+			task.setAttribute(STARTED_DATE_STR, UNDEFINED);
+		} else {
+			task.setAttribute(STARTED_DATE_STR, (new Long(startDate.getTime())).toString());
+		}
+	}
+	
 	public String buildTaskString(AbstractTask task) {
 		String retVal = null;
-		Date dueDate = task.getDueDate();
-		DateRange range = task.getScheduledForDate();
-		Date start = null;
-		Date end = null;
-		
+
 		String category = null;
 		boolean isValidTask = false;
 		for (AbstractTaskContainer taskContainer : task.getParentContainers()) {
@@ -104,24 +131,46 @@ public class KanbanTasksAPIWebSocket implements WebSocket.OnTextMessage {
 		}
 		
 		if (isValidTask) {
-			if (range != null) {
-				if(range.getStartDate() != null) {
-					start = range.getStartDate().getTime();
+			Date scheduledStart = null;
+			Date scheduledEnd = null;
+			Date completionDate = task.getCompletionDate();
+			Date dueDate = task.getDueDate();
+			DateRange scheduledRange = task.getScheduledForDate();
+			if (scheduledRange != null) {
+				if(scheduledRange.getStartDate() != null) {
+					scheduledStart = scheduledRange.getStartDate().getTime();
 				}
-				if (range.getStartDate() != null) {
-					end = range.getStartDate().getTime();
+				if (scheduledRange.getEndDate() != null) {
+					scheduledEnd = scheduledRange.getEndDate().getTime();
 				}
 			}
+			Date startDate = null;
+			if (task.getAttributes().containsKey(STARTED_DATE_STR)) {
+				String strDate = task.getAttribute(STARTED_DATE_STR);
+				if (strDate != UNDEFINED) { 
+					startDate = new Date(Long.parseLong(task.getAttribute(STARTED_DATE_STR)));
+				}
+			} else {
+				IInteractionContext context = getTaskContext(task);
+				setTaskStartDate(context, task);
+				String strDate = task.getAttribute(STARTED_DATE_STR);
+				if (strDate != UNDEFINED) { 
+					startDate = new Date(Long.parseLong(task.getAttribute(STARTED_DATE_STR)));
+				}
+			}
+			
 			retVal =  
 				"{" +
 					"\"id\":" + task.getTaskId() + 
 					",\"summary\":\"" + task.getSummary() + 
 					"\",\"isCompleted\":" + task.isCompleted() +
-					",\"hasContext\":" + ContextCore.getContextManager().hasContext(task.getHandleIdentifier()) +
+					",\"hasContext\":" + hasContext(task) +
 					",\"isActive\":" + task.isActive() +
 					((dueDate != null)?(",\"dueDate\":\"" +  getRelativeDate(dueDate) + "\""):"") +
-					((start != null)?(",\"startDate\":\"" +  getRelativeDate(start) + "\""):"") +
-					((end != null)?(",\"endDate\":\"" +  getRelativeDate(end) + "\""):"") +
+					((scheduledStart != null)?(",\"scheduledStartDate\":\"" +  getRelativeDate(scheduledStart) + "\""):"") +
+					((scheduledEnd != null)?(",\"scheduledEndDate\":\"" +  getRelativeDate(scheduledEnd) + "\""):"") +
+					((completionDate != null)?(",\"completionDate\":\"" +  getRelativeDate(completionDate) + "\""):"") +
+					((startDate != null)?(",\"startDate\":\"" +  getRelativeDate(startDate) + "\""):"") +
 					",\"estimated\":" + task.getEstimatedTimeHours() + 
 					",\"category\":\"" + category + "\"" +  
 					"}";
@@ -179,6 +228,14 @@ public class KanbanTasksAPIWebSocket implements WebSocket.OnTextMessage {
 		}
 	}
 	
+	public Date getContextStartDate(IInteractionContext context) {
+		List<InteractionEvent> interactions = context.getInteractionHistory();
+		if (interactions.size() == 0) {
+			return null;
+		}
+		return context.getInteractionHistory().get(0).getDate();
+	}
+	
 	public void initTasksComm() {
 		final TaskList taskList = TasksUiPlugin.getTaskList();
 		taskList.addChangeListener(new ITaskListChangeListener() {
@@ -208,16 +265,38 @@ public class KanbanTasksAPIWebSocket implements WebSocket.OnTextMessage {
 		});
 		
 		ContextCore.getContextManager().addListener(new AbstractContextListener() {
+			boolean isTaskChecked = false;
+			
+			public void contextChanged(ContextChangeEvent event) {
+				super.contextChanged(event);
+				IInteractionContext context = event.getContext();
+				AbstractTask task = taskList.getTask(context.getHandleIdentifier());
+				if (!task.getAttributes().containsKey(STARTED_DATE_STR)) {
+					Date startDate = getContextStartDate(context);
+					if (startDate != null) {
+						task.setAttribute(STARTED_DATE_STR, (new Long(startDate.getTime())).toString());
+						isTaskChecked = true;
+					} else {
+						task.setAttribute(STARTED_DATE_STR, UNDEFINED);
+					}
+				} else {
+					isTaskChecked = true;
+				}
+			}
+			
 			@Override
 			public void contextActivated(IInteractionContext context) {
+				AbstractTask task = taskList.getTask(context.getHandleIdentifier());
 				sendMessageProtected(buildUpsertString(
-						taskList.getTask(context.getHandleIdentifier())), 
+						task), 
 						"failed to update activated task:");
 			}
 			public void contextDeactivated(IInteractionContext context) {
+				AbstractTask task = taskList.getTask(context.getHandleIdentifier());
 				sendMessageProtected(
-						buildUpsertString(taskList.getTask(context.getHandleIdentifier())), 
+						buildUpsertString(task), 
 						"failed to update deactivated task:");
+				isTaskChecked = false;
 			}
 		});
 		

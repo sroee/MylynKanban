@@ -23,6 +23,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jetty.servlet;bundle-version="8.1.11",
  org.eclipse.jetty.util;bundle-version="8.1.11",
  org.eclipse.jetty.webapp;bundle-version="8.1.11",
- org.eclipse.jetty.xml;bundle-version="8.1.11"
+ org.eclipse.jetty.xml;bundle-version="8.1.11",
+ org.eclipse.mylyn.monitor.core;bundle-version="3.8.3"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
