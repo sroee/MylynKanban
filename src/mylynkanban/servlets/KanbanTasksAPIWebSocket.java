@@ -25,6 +25,7 @@ import org.eclipse.mylyn.internal.tasks.core.TaskContainerDelta;
 import org.eclipse.mylyn.internal.tasks.core.TaskList;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.monitor.core.InteractionEvent;
+import org.json.JSONObject;
 
 public class KanbanTasksAPIWebSocket implements WebSocket.OnTextMessage {
 	
@@ -159,23 +160,30 @@ public class KanbanTasksAPIWebSocket implements WebSocket.OnTextMessage {
 				}
 			}
 			
-			retVal =  
-				"{" +
-					"\"id\":" + task.getTaskId() + 
-					",\"summary\":\"" + task.getSummary() + 
-					"\",\"isCompleted\":" + task.isCompleted() +
-					",\"hasContext\":" + hasContext(task) +
-					",\"isActive\":" + task.isActive() +
-					((dueDate != null)?(",\"dueDate\":\"" +  getRelativeDate(dueDate) + "\""):"") +
-					((scheduledStart != null)?(",\"scheduledStartDate\":\"" +  getRelativeDate(scheduledStart) + "\""):"") +
-					((scheduledEnd != null)?(",\"scheduledEndDate\":\"" +  getRelativeDate(scheduledEnd) + "\""):"") +
-					((completionDate != null)?(",\"completionDate\":\"" +  getRelativeDate(completionDate) + "\""):"") +
-					((startDate != null)?(",\"startDate\":\"" +  getRelativeDate(startDate) + "\""):"") +
-					",\"estimated\":" + task.getEstimatedTimeHours() + 
-					",\"category\":\"" + category + "\"" +  
-					"}";
+			retVal = 
+				new JSONObject()
+					.put("id", task.getTaskId())
+					.put("summary", task.getSummary())
+					.put("isCompleted", task.isCompleted())
+					.put("hasContext", hasContext(task))
+					.put("isActive", task.isActive())
+					.put("estimaged", task.getEstimatedTimeHours())
+					.put("category", category)
+					.putOpt("dueDate", getDateFormatedForClient(dueDate))
+					.putOpt("scheduledStartDate", getDateFormatedForClient(scheduledStart))
+					.putOpt("scheduledEndDate", getDateFormatedForClient(scheduledEnd))
+					.putOpt("completionDate", getDateFormatedForClient(completionDate))
+					.putOpt("startDate", getDateFormatedForClient(startDate))
+					.toString();
 		}
 		return retVal;
+	}
+
+	private JSONObject getDateFormatedForClient(Date date) {
+		if (date == null) return null;
+		return new JSONObject()
+			.put("dateShortStr", getRelativeDate(date))
+			.put("time", date.getTime());
 	}
 	
 	public String buildUpsertString(Collection<AbstractTask> tasks) {

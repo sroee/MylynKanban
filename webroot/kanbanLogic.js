@@ -24,7 +24,7 @@
 				controller: function($scope, $element){ 
 					$scope.testTask = function(task) {
 						return 	(task.data.status === $scope.status) &&
-								(task.data.category === $scope.category || $scope.category === "" && !task.data.category);
+								(task.data.category === $scope.category || ($scope.category === "" && !task.data.category));
 					}; 
 				},
 				templateUrl: "tmpl/column.html",
@@ -109,7 +109,7 @@
 			$scope.categories = taskConnector.categories;
 			taskConnector.addTaskModifiedListener(function() {
 				$scope.$apply();
-			});
+			});			
 		};
 
 		function detectStatus(completed, hasContext, isActive) {
@@ -119,9 +119,8 @@
 		function putEllipsis(str, maxLength) {
 			if (str.length > maxLength) {
 				return str.substring(0, maxLength - 3) + "...";
-			} else {
-				return str;
-			}
+			} 
+			return str;
 		}
 
 		function buildTask(task) {
@@ -139,7 +138,92 @@
 				scheduledStartDate: task.scheduledStartDate,
 				endDate: task.completionDate,
 				estimated: estimated,
-				category: putEllipsis(task.category, 25)
+				category: putEllipsis(task.category, 25),
+				getDueDateColor : function() {
+					var colorToReturn = "blue";
+					var currentTime = new Date().getTime();
+					
+					if (this.dueDate) {
+						if (this.dueDate.time > currentTime) {
+							colorToReturn = "green";
+						} else {
+							colorToReturn = "red";
+						}
+					}
+					
+					return {"background-color": colorToReturn};
+				},
+				getCompletedDateColor : function() {
+					var colorToReturn = "blue";
+					
+					if (this.endDate) {
+						if (this.dueDate) {
+							if (this.dueDate.time >= this.endDate.time) {
+								colorToReturn = "green";
+							} else {
+								colorToReturn = "red";
+							}
+						} else {
+							colorToReturn = "green";
+						}
+					}
+					
+					return {"background-color": colorToReturn};
+				},
+				getStartedDateColor : function() {
+					var colorToReturn = "blue";
+					
+					if (this.startDate) {
+						var schedEndTime = this.scheduledStartDate.time + (2 * 24 * 60 * 60 * 1000)
+						if (this.scheduledEndDate) {
+							schedEndTime = this.scheduledEndDate.time;
+						}
+						
+						if (this.startDate.time <= schedEndTime) {
+							colorToReturn = "green";
+						} else {
+							colorToReturn = "red";
+						}
+					}
+					
+					return {"background-color": colorToReturn};
+				},
+				getScheduledDateColor : function() {
+					var colorToReturn = "blue";
+					var currentTime = new Date().getTime();
+					if (this.scheduledStartDate) {
+						var schedEndTime = this.scheduledStartDate.time + (2 * 24 * 60 * 60 * 1000)
+						if (this.scheduledEndDate) {
+							schedEndTime = this.scheduledEndDate.time;
+						}
+						
+						if (this.status === 'todo') {
+							if (this.scheduledStartDate.time > currentTime) {
+								colorToReturn = "black";
+							} else {
+								if (schedEndTime >= currentTime) {
+									colorToReturn = "green";
+								} else {
+									colorToReturn = "red";
+								}
+							}
+						} else {
+							var dateToCompare = this.startDate || this.endDate;
+							if (dateToCompare) {
+								if (dateToCompare.time <= schedEndTime) {
+									colorToReturn = "green";
+								} else {
+									colorToReturn = "red";
+								}
+							}
+							else {
+								colorToReturn = "purple";
+							}							
+						}
+					}
+					
+					return {"background-color": colorToReturn};
+				}
 			};
 		};
 		
