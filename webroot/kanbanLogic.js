@@ -260,24 +260,38 @@
 	
 	
 	var isSupported = (function() {
-		function buildOrRequirement() {
+		
+		// undefined is interpreted as false, otherwise true, 
+		// returns undefined for false, otherwise the true element.
+		function or() {
 			var remain = _.without(arguments, undefined); 
 			if (remain.length === 0)
 				return undefined;
 			return remain[0];
 		}
 		
+		// undefined is interpreted as false, otherwise true, 
+		// returns undefined for false, otherwise the true element.
+		function xor() {
+			var remain = _.without(arguments, undefined); 
+			if (remain.length === 1)
+				return remain[0];
+			return undefined;
+		}
+		
+		// undefined is false, otherwise true.
 		function req(req) {
 			return req !== undefined;
 		}
 		return	req(window.WebSocket) &&
 				req(document.head) &&
-		        req(buildOrRequirement(document.head.style.MozBorderRadius, 
+		        req(or(document.head.style.MozBorderRadius, 
 		        		document.head.style.WebkitBorderRadius, 
 	                    document.head.style.borderRadius)) && 
-	            req(buildOrRequirement(document.head.style.boxShadow,
+	            req(or(document.head.style.boxShadow,
                     	document.head.style.WebkitBoxShadow,
-                    	document.head.style.MozBoxShadow));		
+                    	document.head.style.MozBoxShadow)) &&
+                req(xor(document.head.style.zoom, document.head.style.MozTransform));		
 	}());
 	if (!isSupported) {
 		unsupported();
