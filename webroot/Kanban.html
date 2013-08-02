@@ -10,7 +10,7 @@
 	<span ng-show="task.data.estimated&&task.data.estimated!=0" class="estimated">{{task.data.estimated}}d</span>
 	<div style="clear: both"></div>
 	<div class="summary">{{task.data.summary}}</div>
-	<table><tr> 
+	<table class="timeTable"><tr> 
 		<td><span ng-show="task.data.scheduledStartDate && !task.data.startDate" class="scheduledTo">{{task.data.scheduledStartDate.dateShortStr}}<span class="em" ng-style="task.data.getScheduledDateColor()"><span class="shrink70">scheduled</span></span></span></td>
 		<td><span ng-show="task.data.startDate" class="scheduledTo">{{task.data.startDate.dateShortStr}}<span class="em" ng-style="task.data.getStartedDateColor()">started</span></span></td>
 		<td><span ng-show="task.data.dueDate && !task.data.endDate" class="dueDate">{{task.data.dueDate.dateShortStr}}<span class="em" ng-style="task.data.getDueDateColor()">due</span></span></td>

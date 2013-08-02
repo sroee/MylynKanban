@@ -161,7 +161,7 @@
 							if (this.dueDate.time >= this.endDate.time) {
 								colorToReturn = "green";
 							} else {
-								colorToReturn = "red";
+								colorToReturn = "#8C0000";
 							}
 						} else {
 							colorToReturn = "green";
@@ -182,7 +182,7 @@
 						if (this.startDate.time <= schedEndTime) {
 							colorToReturn = "green";
 						} else {
-							colorToReturn = "red";
+							colorToReturn = "#8C0000";
 						}
 					}
 					
@@ -260,13 +260,24 @@
 	
 	
 	var isSupported = (function() {
-		var requirements = [window.WebSocket];
-		
-		if (_.indexOf(requirements, undefined) !== -1) {
-			return false;
-		} else {
-			return true;
+		function buildOrRequirement() {
+			var remain = _.without(arguments, undefined); 
+			if (remain.length === 0)
+				return undefined;
+			return remain[0];
 		}
+		
+		function req(req) {
+			return req !== undefined;
+		}
+		return	req(window.WebSocket) &&
+				req(document.head) &&
+		        req(buildOrRequirement(document.head.style.MozBorderRadius, 
+		        		document.head.style.WebkitBorderRadius, 
+	                    document.head.style.borderRadius)) && 
+	            req(buildOrRequirement(document.head.style.boxShadow,
+                    	document.head.style.WebkitBoxShadow,
+                    	document.head.style.MozBoxShadow));		
 	}());
 	if (!isSupported) {
 		unsupported();

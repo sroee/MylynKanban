@@ -112,7 +112,7 @@ body {
 }
 #kanbanTable .td {
   border: dashed 1px #9f7b49;
-  vertical-align: baseline;
+  vertical-align: top;
   height: 150px;
 }
 #kanbanTable .th {
@@ -192,6 +192,10 @@ body {
   font-family: cursive;
   font-size: 1.1em;
   text-align: left;
+}
+.task .timeTable {
+  -moz-transform: scale(0.85);
+  -moz-transform-origin: 0 0;
 }
 .task .scheduledTo,
 .task .dueDate,
